@@ -25,6 +25,8 @@ UNITREE_LEGGED_SDK::HighState RecvHighLCM = {0};
 unitree_legged_msgs::HighCmd SendHighROS;
 unitree_legged_msgs::HighState RecvHighROS;
 
+UNITREE_LEGGED_SDK::LCM roslcm(UNITREE_LEGGED_SDK::HIGHLEVEL);
+
 template <typename TLCM> void *update_loop(void *param) {
   TLCM *data = (TLCM *)param;
   while (ros::ok) {
@@ -50,13 +52,12 @@ void subCallback(const unitree_legged_msgs::HighCmd &data) {
 
   SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
   roslcm.Send(SendHighLCM);
-  loop_rate.sleep();
 }
 
 // UNITREE_LEGGED_SDK::HighCmd, UNITREE_LEGGED_SDK::HighState,
 //     UNITREE_LEGGED_SDK::LCM;
 
-int mainHelper(int argc, char *argv[], UNITREE_LEGGED_SDK::LCM &roslcm) {
+int mainHelper(int argc, char *argv[]) {
   std::cout << "WARNING: Control level is set to HIGH-level." << std::endl
             << "Make sure the robot is standing on the ground." << std::endl
             << "Press Enter to continue..." << std::endl;
@@ -75,9 +76,9 @@ int mainHelper(int argc, char *argv[], UNITREE_LEGGED_SDK::LCM &roslcm) {
   pthread_create(&tid, NULL, update_loop<UNITREE_LEGGED_SDK::LCM>, &roslcm);
 
   while (ros::ok()) {
-    roslcm.Get(RecvHighLCM);
-    RecvHighROS = ToRos(RecvHighLCM);
-    printf("%f\n", RecvHighROS.forwardSpeed);
+    // roslcm.Get(RecvHighLCM);
+    // RecvHighROS = ToRos(RecvHighLCM);
+    // printf("%f\n", RecvHighROS.forwardSpeed);
 
     // std::cout << "================" << std::endl;
     // std::cout << "SendHighROS.mode : " << SendHighROS.mode << std::endl;
@@ -93,6 +94,8 @@ int mainHelper(int argc, char *argv[], UNITREE_LEGGED_SDK::LCM &roslcm) {
     // SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
     // roslcm.Send(SendHighLCM);
 
+    // SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
+    // roslcm.Send(SendHighLCM);
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -122,8 +125,8 @@ int main(int argc, char *argv[]) {
     rname = UNITREE_LEGGED_SDK::LeggedType::Aliengo;
 
   // UNITREE_LEGGED_SDK::InitEnvironment();
-  UNITREE_LEGGED_SDK::LCM roslcm(UNITREE_LEGGED_SDK::HIGHLEVEL);
-  mainHelper(argc, argv, roslcm);
+  // UNITREE_LEGGED_SDK::LCM roslcm(UNITREE_LEGGED_SDK::HIGHLEVEL);
+  mainHelper(argc, argv);
 
   // #endif
 }
