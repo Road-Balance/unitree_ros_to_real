@@ -43,6 +43,11 @@ public:
     SendHighROS.pitch = data.pitch;
     SendHighROS.yaw = data.yaw;
 
+    SendHighROS.forwardSpeed = 0.0f;
+    SendHighROS.sideSpeed = 0.0f;
+    SendHighROS.rotateSpeed = 0.0f;
+    SendHighROS.bodyHeight = 0.0f;
+
     SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
     roslcm.Send(SendHighLCM);
     loop_rate.sleep();
