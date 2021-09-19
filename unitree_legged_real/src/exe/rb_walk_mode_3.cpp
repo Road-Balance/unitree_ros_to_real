@@ -81,7 +81,7 @@ public:
 
     m_pub.publish(RecvHighROS);
   }
-}
+};
 
 int main(int argc, char *argv[]) {
   ros::init(argc, argv, "walk_ros_mode");

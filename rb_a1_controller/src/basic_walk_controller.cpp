@@ -41,27 +41,39 @@ public:
     m_pub.publish(m_high_cmd);
   }
 
-  void rollCtrl(float roll_in = 0.3f) {
-    ROS_INFO("rollCtrl");
+  void basicPositon()
+  {
+    ROS_INFO("basicPositon");
     this->sendInitialCmd();
+
+    m_high_cmd.mode = 1;
+    m_high_cmd.roll = 0.0f;
+    m_high_cmd.pitch = 0.0f;
+    m_high_cmd.yaw = 0.0f;
+    m_pub.publish(m_high_cmd);
+  }
+
+  void rollCtrl(float roll_in = 0.5f) {
+    ROS_INFO("rollCtrl");
+    // this->sendInitialCmd();
 
     m_high_cmd.mode = 1;
     m_high_cmd.roll = roll_in;
     m_pub.publish(m_high_cmd);
   }
 
-  void pitchCtrl(float pitch_in = 0.3f) {
+  void pitchCtrl(float pitch_in = 0.5f) {
     ROS_INFO("pitchCtrl");
-    this->sendInitialCmd();
+    // this->sendInitialCmd();
 
     m_high_cmd.mode = 1;
     m_high_cmd.pitch = pitch_in;
     m_pub.publish(m_high_cmd);
   }
 
-  void yawCtrl(float yaw_in = 0.3f) {
+  void yawCtrl(float yaw_in = 0.1f) {
     ROS_INFO("yawCtrl");
-    this->sendInitialCmd();
+    // this->sendInitialCmd();
 
     m_high_cmd.mode = 1;
     m_high_cmd.yaw = yaw_in;
@@ -104,10 +116,16 @@ int main(int argv, char **argc) {
     if (time_duration.count() < 5.0)
       my_a1.rollCtrl();
 
-    if (time_duration.count() > 5.0 && time_duration.count() < 10.0)
+    if (time_duration.count() > 5.0 && time_duration.count() < 6.0)
+      my_a1.basicPositon();
+
+    if (time_duration.count() > 6.0 && time_duration.count() < 10.0)
       my_a1.pitchCtrl();
 
-    if (time_duration.count() > 10.0 && time_duration.count() < 15.0)
+    if (time_duration.count() > 10.0 && time_duration.count() < 11.0)
+      my_a1.basicPositon();
+
+    if (time_duration.count() > 11.0 && time_duration.count() < 15.0)
       my_a1.yawCtrl();
 
     now = std::chrono::steady_clock::now();

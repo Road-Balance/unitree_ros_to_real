@@ -32,7 +32,7 @@ template <typename TLCM> void *update_loop(void *param) {
   while (ros::ok) {
     data->Recv();
     usleep(2000);
-  }
+  } 
 }
 
 void subCallback(const unitree_legged_msgs::HighCmd &data) {
@@ -65,11 +65,11 @@ int mainHelper(int argc, char *argv[]) {
 
   ros::NodeHandle nh;
   ros::Subscriber sub = nh.subscribe("/a1_high_cmd", 1, subCallback);
+  // ros::Publisher pub = nh.advertise("/a1_high_cmd", 1, subCallback);
 
   ros::Rate loop_rate(500);
 
   // SetLevel(HIGHLEVEL);
-
   roslcm.SubscribeState();
 
   pthread_t tid;
@@ -78,7 +78,7 @@ int mainHelper(int argc, char *argv[]) {
   while (ros::ok()) {
     // roslcm.Get(RecvHighLCM);
     // RecvHighROS = ToRos(RecvHighLCM);
-    // printf("%f\n", RecvHighROS.forwardSpeed);
+    // printf("%f\n", RecvHighcROS.forwardSpeed);
 
     // std::cout << "================" << std::endl;
     // std::cout << "SendHighROS.mode : " << SendHighROS.mode << std::endl;
@@ -97,7 +97,7 @@ int mainHelper(int argc, char *argv[]) {
     // SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
     // roslcm.Send(SendHighLCM);
     ros::spinOnce();
-    loop_rate.sleep();
+    // loop_rate.sleep();
   }
   return 0;
 }
