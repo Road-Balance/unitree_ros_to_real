@@ -95,6 +95,8 @@ And when you run the high level controller, please make sure the robot is standi
 # Road Balance Works
 
 ```
+$ sudo apt-get install ros-melodic-joy
+$ rosrun joy joy_node
 $ rosrun rb_a1_controller basic_walk_controller
 $ rosrun unitree_legged_real rb_walk_mode 
 ```
