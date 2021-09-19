@@ -90,3 +90,11 @@ torque_lcm
 The `velocity_lcm` and `torque_lcm` have to run under root account too. Please use the same method as runing `real_launch`.
 
 And when you run the high level controller, please make sure the robot is standing on the ground. The high level only has `walk_lcm`.
+
+
+# Road Balance Works
+
+```
+$ rosrun rb_a1_controller basic_walk_controller
+$ rosrun unitree_legged_real rb_walk_mode 
+```
