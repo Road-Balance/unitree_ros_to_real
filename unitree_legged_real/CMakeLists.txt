@@ -21,17 +21,17 @@ include_directories(
 
 set(CMAKE_CXX_FLAGS "-O3")
 
-# include_directories(~/rb_unitree_legged_sdk/include)
-# link_directories(~/rb_unitree_legged_sdk/lib)
+include_directories(~/rb_unitree_legged_sdk/include)
+link_directories(~/rb_unitree_legged_sdk/lib)
 
-include_directories(/home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/include)
-link_directories(/home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/lib)
+# include_directories(/home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/include)
+# link_directories(/home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/lib)
 string(CONCAT LEGGED_SDK_NAME libunitree_legged_sdk_amd64.so)
 set(EXTRA_LIBS ${LEGGED_SDK_NAME} lcm)
 
-
-add_executable(lcm_server_3_2 /home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/examples/lcm_server.cpp)
-# add_executable(lcm_server_3_2 ~/rb_unitree_legged_sdk/examples/lcm_server.cpp)
+add_definitions(-DSDK3_2)
+# add_executable(lcm_server_3_2 /home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/examples/lcm_server.cpp)
+add_executable(lcm_server_3_2 ~/rb_unitree_legged_sdk/examples/lcm_server.cpp)
 target_link_libraries(lcm_server_3_2 ${EXTRA_LIBS} ${catkin_LIBRARIES})
 add_dependencies(lcm_server_3_2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
