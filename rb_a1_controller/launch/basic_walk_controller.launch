@@ -1,0 +1,5 @@
+<launch>
+    <!-- launch roscpp basic exmaple -->
+    <node pkg="rb_a1_controller" type="basic_walk_controller" name="basic_walk_controller" output="screen">
+    </node>
+</launch>
