@@ -11,6 +11,8 @@ Use of this source code is governed by the MPL-2.0 license, see LICENSE.
 #include <string>
 #include <unitree_legged_msgs/HighCmd.h>
 #include <unitree_legged_msgs/HighState.h>
+#include <sensor_msgs/Joy.h>
+
 
 UNITREE_LEGGED_SDK::LCM roslcm(UNITREE_LEGGED_SDK::HIGHLEVEL);
 
@@ -45,21 +47,28 @@ public:
 
     m_pub = m_nh.advertise<unitree_legged_msgs::HighState>("/a1_high_state", 5);
     m_sub =
-        m_nh.subscribe("/a1_high_cmd", 1, &A1LCMInterface::subCallback, this);
+        m_nh.subscribe("/joy", 1, &A1LCMInterface::subCallback, this);
   }
 
   ~A1LCMInterface() {}
 
-  void subCallback(const unitree_legged_msgs::HighCmd &data) {
-    std::cout << data.roll << std::endl;
-    std::cout << data.pitch << std::endl;
-    std::cout << data.yaw << std::endl;
+  void subCallback(const sensor_msgs::Joy &data) {
+
+    std::cout << "1X : " << data.axes[0] << std::endl;
+    std::cout << "1Y : " << data.axes[1] << std::endl;
+    std::cout << "2X : " << data.axes[3] << std::endl;
+    std::cout << "2Y : " << data.axes[4] << std::endl;
+
+    // std::cout << data.roll << std::endl;
+    // std::cout << data.pitch << std::endl;
+    // std::cout << data.yaw << std::endl;
 
     SendHighROS.mode = 1;
-    SendHighROS.roll = data.roll;
-    SendHighROS.pitch = data.pitch;
-    SendHighROS.yaw = data.yaw;
+    SendHighROS.roll = data.axes[3] * 0.3;
+    SendHighROS.pitch = data.axes[4] * 0.3;
+    SendHighROS.yaw = data.axes[0] * 0.3;
 
+    //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
     SendHighROS.forwardSpeed = 0.0f;
     SendHighROS.sideSpeed = 0.0f;
     SendHighROS.rotateSpeed = 0.0f;
@@ -77,7 +86,8 @@ public:
     // Next is Sub from LCM and pub to other Node
     roslcm.Get(RecvHighLCM);
     RecvHighROS = ToRos(RecvHighLCM);
-    printf("%f\n", RecvHighROS.forwardSpeed);
+    // printf("%f\n", RecvHighROS.forwardSpeed);
+    printf("%f\n", RecvHighROS.rotateSpeed);
 
     m_pub.publish(RecvHighROS);
   }
