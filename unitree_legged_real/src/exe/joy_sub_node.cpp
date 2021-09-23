@@ -21,6 +21,17 @@ private:
   ros::Publisher m_pub;
   ros::Subscriber m_sub;
 
+  int control_mode = 1;
+
+  /*
+  mode 1
+    roll, pitch, yaw, bodyHeight
+  mode 2
+    forwardSpeed, rotateSpeed
+  mode switch button
+    buttons[4]
+  */
+
 public:
   JoySubA1CmdPub(const std::string &name_in) : m_name(name_in) {
     ROS_INFO("Publisher and Subscriber initialized");
@@ -37,20 +48,38 @@ public:
     std::cout << "2X : " << data.axes[3] << std::endl;
     std::cout << "2Y : " << data.axes[4] << std::endl;
 
-    SendHighROS.mode = 1;
-    SendHighROS.roll = data.axes[3] * 0.3;
-    SendHighROS.pitch = data.axes[4] * 0.3;
-    SendHighROS.yaw = data.axes[0] * 0.3;
+    if (data.buttons[4] == 1)
+      control_mode = -1;
 
-    //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
-    SendHighROS.forwardSpeed = 0.0f;
-    SendHighROS.sideSpeed = 0.0f;
-    SendHighROS.rotateSpeed = 0.0f;
-    SendHighROS.bodyHeight = 0.0f;
+    if (control_mode == 1) {
+      SendHighROS.mode = control_mode;
+      // TODO: Check value orientation
+      SendHighROS.roll = data.axes[0] * 0.3;
+      SendHighROS.pitch = data.axes[1] * 0.3;
+      SendHighROS.yaw = data.axes[3] * 0.3;
+
+      //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
+      SendHighROS.forwardSpeed = 0.0f;
+      SendHighROS.sideSpeed = 0.0f;
+      SendHighROS.rotateSpeed = 0.0f;
+      SendHighROS.bodyHeight = 0.0f;
+    } else {
+      SendHighROS.mode = control_mode;
+      // TODO: Check value orientation
+      SendHighROS.roll = 0.0f;
+      SendHighROS.pitch = 0.0f;
+      SendHighROS.yaw = 0.0f;
+
+      //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
+      SendHighROS.forwardSpeed = data.axes[1] * 0.3;
+      SendHighROS.sideSpeed = 0.0f;
+      SendHighROS.rotateSpeed = data.axes[3] * 0.3;
+      SendHighROS.bodyHeight = 0.0f;
+    }
 
     m_pub.publish(SendHighROS);
 
-    std::cout << SendHighROS.roll << std::endl;
+    // TODO: SendHighROS << operator
     std::cout << std::endl;
   }
 };
