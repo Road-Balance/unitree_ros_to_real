@@ -49,9 +49,11 @@ public:
     std::cout << "2Y : " << data.axes[4] << std::endl;
 
     if (data.buttons[4] == 1)
-      control_mode = -1;
+      control_mode = 2;
+    else
+      control_mode = 1;
 
-    if (control_mode == 1) {
+    if (control_mode == 1 || control_mode == 0) {
       SendHighROS.mode = control_mode;
       // TODO: Check value orientation
       SendHighROS.roll = data.axes[0] * 0.3;
@@ -72,7 +74,10 @@ public:
 
       //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
       SendHighROS.forwardSpeed = data.axes[1] * 0.3;
-      SendHighROS.sideSpeed = 0.0f;
+      if (data.axes[0] < 0)
+        SendHighROS.sideSpeed = data.axes[0] * 0.4;
+
+      SendHighROS.sideSpeed = data.axes[0] * 0.3;
       SendHighROS.rotateSpeed = data.axes[3] * 0.3;
       SendHighROS.bodyHeight = 0.0f;
     }

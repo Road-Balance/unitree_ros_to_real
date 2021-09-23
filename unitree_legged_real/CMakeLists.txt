@@ -89,6 +89,10 @@ add_executable(rb_walk_mode_3 src/exe/rb_walk_mode_3.cpp)
 target_link_libraries(rb_walk_mode_3 ${EXTRA_LIBS} ${catkin_LIBRARIES})
 add_dependencies(rb_walk_mode_3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+add_executable(rb_walk_mode_4 src/exe/rb_walk_mode_4.cpp)
+target_link_libraries(rb_walk_mode_4 ${EXTRA_LIBS} ${catkin_LIBRARIES})
+add_dependencies(rb_walk_mode_4 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 add_executable(sub_test src/exe/sub_test.cpp)
 target_link_libraries(sub_test ${EXTRA_LIBS} ${catkin_LIBRARIES})
 add_dependencies(sub_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

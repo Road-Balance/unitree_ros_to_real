@@ -55,10 +55,13 @@ public:
     std::cout << data.pitch << std::endl;
     std::cout << data.yaw << std::endl;
 
-    SendHighROS.mode = 1;
+    SendHighROS.mode = data.mode;
     SendHighROS.roll = data.roll;
     SendHighROS.pitch = data.pitch;
     SendHighROS.yaw = data.yaw;
+
+    // if (data.mode == 2)
+    //   SendHighROS.mode = 2;
 
     SendHighROS.forwardSpeed = data.forwardSpeed;
     SendHighROS.sideSpeed = data.sideSpeed;
@@ -70,6 +73,10 @@ public:
     // SendHighROS.rotateSpeed = data.rotateSpeed;
     // SendHighROS.bodyHeight = data.bodyHeight;
 
+    printf("==========================\n");
+    printf("%f\n", SendHighROS.forwardSpeed);
+    printf("%f\n", SendHighROS.rotateSpeed);
+
     SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
     roslcm.Send(SendHighLCM);
 
@@ -77,7 +84,7 @@ public:
     // Next is Sub from LCM and pub to other Node
     roslcm.Get(RecvHighLCM);
     RecvHighROS = ToRos(RecvHighLCM);
-    printf("%f\n", RecvHighROS.forwardSpeed);
+    // printf("%f\n", RecvHighROS.forwardSpeed);
 
     m_pub.publish(RecvHighROS);
   }
