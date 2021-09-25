@@ -98,6 +98,9 @@ And when you run the high level controller, please make sure the robot is standi
 $ sudo apt-get install ros-melodic-joy
 $ rosrun joy joy_node
 $ rosrun rb_a1_controller basic_walk_controller
-$ rosrun rb_a1_controller joy_
-$ rosrun unitree_legged_real rb_walk_mode 
+
+$ roslaunch unitree_legged_real real.launch rname:=a1 ctrl_level:=highlevel firmwork:=3_2
+$ roslaunch unitree_legged_real fast_joy.launch
+$ rosrun unitree_legged_real joy_sub_node
+$ rosrun unitree_legged_real rb_walk_mode_4
 ```
