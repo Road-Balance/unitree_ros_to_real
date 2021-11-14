@@ -50,36 +50,52 @@ public:
 
     if (data.buttons[4] == 1)
       control_mode = 2;
+    else if (data.buttons[5] == 1)
+      control_mode = 3;
+    else if (data.buttons[6] == 1)
+      control_mode = 4;
     else
       control_mode = 1;
 
     if (control_mode == 1 || control_mode == 0) {
       SendHighROS.mode = control_mode;
       // TODO: Check value orientation
-      SendHighROS.roll = data.axes[0] * 0.3;
-      SendHighROS.pitch = data.axes[1] * 0.3;
-      SendHighROS.yaw = data.axes[3] * 0.3;
-
-      //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
-      SendHighROS.forwardSpeed = 0.0f;
-      SendHighROS.sideSpeed = 0.0f;
-      SendHighROS.rotateSpeed = 0.0f;
-      SendHighROS.bodyHeight = 0.0f;
-    } else {
+      SendHighROS.euler[0] = data.axes[0] * 0.3;
+      SendHighROS.euler[1] = data.axes[1] * 0.3;
+      SendHighROS.euler[2] = data.axes[3] * 0.3;
+    } else if (control_mode == 2) {
+      // basic trot mode
       SendHighROS.mode = control_mode;
-      // TODO: Check value orientation
-      SendHighROS.roll = 0.0f;
-      SendHighROS.pitch = 0.0f;
-      SendHighROS.yaw = 0.0f;
+      SendHighROS.gaitType = 1;
 
-      //   SendHighROS.forwardSpeed = data.axes[1] * SCALE_GAIN;
-      SendHighROS.forwardSpeed = data.axes[1] * 0.3;
-      if (data.axes[0] < 0)
-        SendHighROS.sideSpeed = data.axes[0] * 0.4;
+      SendHighROS.velocity[0] = data.axes[0] * 0.3; // -1  ~ +1
+      SendHighROS.velocity[1] = data.axes[1] * 0.3; // -1  ~ +1
+      // SendHighROS.yawSpeed = data.axes[2] * 0.3;
+      SendHighROS.bodyHeight = 0.1;
 
-      SendHighROS.sideSpeed = data.axes[0] * 0.3;
-      SendHighROS.rotateSpeed = data.axes[3] * 0.3;
-      SendHighROS.bodyHeight = 0.0f;
+      // if (data.axes[0] < 0)
+      //   SendHighROS.sideSpeed = data.axes[0] * 0.4;
+      // SendHighROS.sideSpeed = data.axes[0] * 0.3;
+      // SendHighROS.rotateSpeed = data.axes[3] * 0.3;
+    } else if (control_mode == 3) {
+      // trot running mode
+      SendHighROS.mode = 2;
+      SendHighROS.gaitType = 2;
+
+      SendHighROS.velocity[0] = data.axes[0] * 0.3; // -1  ~ +1
+      SendHighROS.velocity[1] = data.axes[1] * 0.3; // -1  ~ +1
+      SendHighROS.yawSpeed = data.axes[2] * 0.3;
+      // SendHighROS.bodyHeight = 0.1;
+      SendHighROS.footRaiseHeight = 0.1;
+    } else if (control_mode == 4) {
+      // stairs climbing mode
+      SendHighROS.mode = 2;
+      SendHighROS.gaitType = 3;
+
+      SendHighROS.velocity[0] = data.axes[0] * 0.3; // -1  ~ +1
+      SendHighROS.velocity[1] = data.axes[1] * 0.3; // -1  ~ +1
+
+      SendHighROS.bodyHeight = 0.1;
     }
 
     m_pub.publish(SendHighROS);

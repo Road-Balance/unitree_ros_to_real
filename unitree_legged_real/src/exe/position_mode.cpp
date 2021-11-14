@@ -12,12 +12,7 @@ Use of this source code is governed by the MPL-2.0 license, see LICENSE.
 #include <unitree_legged_msgs/LowState.h>
 #include "convert.h"
 
-#ifdef SDK3_1
-using namespace aliengo;
-#endif
-#ifdef SDK3_2
 using namespace UNITREE_LEGGED_SDK;
-#endif
 
 template<typename TLCM>
 void* update_loop(void* param)
@@ -53,7 +48,7 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
     int sin_count = 0;
     float qInit[3]={0};
     float qDes[3]={0};
-    float sin_mid_q[3] = {0.0, 1.0, -2.0};
+    float sin_mid_q[3] = {0.0, 1.2, -2.0};
     float Kp[3] = {0};  
     float Kd[3] = {0};
     TCmd SendLowLCM = {0};
@@ -63,7 +58,6 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
 
     bool initiated_flag = false;  // initiate need time
     int count = 0;
-    int time = 0;
 
     roslcm.SubscribeState();
 
@@ -83,8 +77,8 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
     while (ros::ok()){
         roslcm.Get(RecvLowLCM);
         RecvLowROS = ToRos(RecvLowLCM);
-        printf("FR_2 position: %f %d\n",  RecvLowROS.motorState[FR_2].q, ++time);
-        
+        printf("FR_2 position: %f\n",  RecvLowROS.motorState[FR_2].q);
+
         if(initiated_flag == true){
             motiontime++;
 
@@ -117,7 +111,7 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
                 }
                 double sin_joint1, sin_joint2;
                 // last, do sine wave
-                if( motiontime >= 1700){
+                if( motiontime >= 400){
                     sin_count++;
                     sin_joint1 = 0.6 * sin(3*M_PI*sin_count/1000.0);
                     sin_joint2 = -0.6 * sin(1.8*M_PI*sin_count/1000.0);
@@ -165,27 +159,7 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
 
 int main(int argc, char *argv[]){
     ros::init(argc, argv, "position_ros_mode");
-    std::string firmwork;
-    ros::param::get("/firmwork", firmwork);
 
-    #ifdef SDK3_1
-        aliengo::Control control(aliengo::LOWLEVEL);
-        aliengo::LCM roslcm;
-        mainHelper<aliengo::LowCmd, aliengo::LowState, aliengo::LCM>(argc, argv, roslcm);
-    #endif
-
-    #ifdef SDK3_2
-        std::string robot_name;
-        UNITREE_LEGGED_SDK::LeggedType rname;
-        ros::param::get("/robot_name", robot_name);
-        if(strcasecmp(robot_name.c_str(), "A1") == 0)
-            rname = UNITREE_LEGGED_SDK::LeggedType::A1;
-        else if(strcasecmp(robot_name.c_str(), "Aliengo") == 0)
-            rname = UNITREE_LEGGED_SDK::LeggedType::Aliengo;
-            
-        // UNITREE_LEGGED_SDK::Control control(rname, UNITREE_LEGGED_SDK::LOWLEVEL);
-        // UNITREE_LEGGED_SDK::InitEnvironment();
-        UNITREE_LEGGED_SDK::LCM roslcm(LOWLEVEL);
-        mainHelper<UNITREE_LEGGED_SDK::LowCmd, UNITREE_LEGGED_SDK::LowState, UNITREE_LEGGED_SDK::LCM>(argc, argv, roslcm);
-    #endif
+    UNITREE_LEGGED_SDK::LCM roslcm(LOWLEVEL);
+    mainHelper<UNITREE_LEGGED_SDK::LowCmd, UNITREE_LEGGED_SDK::LowState, UNITREE_LEGGED_SDK::LCM>(argc, argv, roslcm);
 }
