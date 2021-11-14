@@ -31,6 +31,7 @@ string(CONCAT LEGGED_SDK_NAME libunitree_legged_sdk_amd64.so)
 set(EXTRA_LIBS ${LEGGED_SDK_NAME} lcm)
 
 add_definitions(-DSDK3_2)
+
 # add_executable(lcm_server_3_2 /home/kimsooyoung/Documents/RB/rb_unitree_legged_sdk/examples/lcm_server.cpp)
 add_executable(lcm_server_3_2 ~/rb_unitree_legged_sdk/examples/lcm_server.cpp)
 target_link_libraries(lcm_server_3_2 ${EXTRA_LIBS} ${catkin_LIBRARIES})
