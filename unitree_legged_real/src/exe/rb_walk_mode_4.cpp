@@ -51,21 +51,20 @@ public:
   ~A1LCMInterface() {}
 
   void subCallback(const unitree_legged_msgs::HighCmd &data) {
-    std::cout << data.roll << std::endl;
-    std::cout << data.pitch << std::endl;
-    std::cout << data.yaw << std::endl;
+    // std::cout << data.roll << std::endl;
+    // std::cout << data.pitch << std::endl;
+    // std::cout << data.yaw << std::endl;
 
     SendHighROS.mode = data.mode;
-    SendHighROS.roll = data.roll;
-    SendHighROS.pitch = data.pitch;
-    SendHighROS.yaw = data.yaw;
+    SendHighROS.velocity[0] = data.velocity[0];
+    SendHighROS.velocity[1] = data.velocity[1];
 
     // if (data.mode == 2)
     //   SendHighROS.mode = 2;
 
-    SendHighROS.forwardSpeed = data.forwardSpeed;
-    SendHighROS.sideSpeed = data.sideSpeed;
-    SendHighROS.rotateSpeed = data.rotateSpeed;
+    SendHighROS.euler[0] = data.euler[0];
+    SendHighROS.euler[1] = data.euler[1];
+    SendHighROS.euler[2] = data.euler[2];
     SendHighROS.bodyHeight = data.bodyHeight;
 
     // SendHighROS.forwardSpeed = data.forwardSpeed;
@@ -74,8 +73,8 @@ public:
     // SendHighROS.bodyHeight = data.bodyHeight;
 
     printf("==========================\n");
-    printf("%f\n", SendHighROS.forwardSpeed);
-    printf("%f\n", SendHighROS.rotateSpeed);
+    // printf("%f\n", SendHighROS.forwardSpeed);
+    // printf("%f\n", SendHighROS.rotateSpeed);
 
     SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
     roslcm.Send(SendHighLCM);
