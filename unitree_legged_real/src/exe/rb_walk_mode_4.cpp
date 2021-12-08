@@ -59,8 +59,8 @@ public:
     SendHighROS.velocity[0] = data.velocity[0];
     SendHighROS.velocity[1] = data.velocity[1];
 
-    // if (data.mode == 2)
-    //   SendHighROS.mode = 2;
+    if (data.mode == 2)
+      SendHighROS.mode = 2;
 
     SendHighROS.euler[0] = data.euler[0];
     SendHighROS.euler[1] = data.euler[1];
