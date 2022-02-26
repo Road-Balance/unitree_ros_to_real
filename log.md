@@ -68,24 +68,12 @@ netmask 255.255.255.0
 ```
 Where the port name have to be changed to your own.
 
-# Run the package
+# Real Robot
 
 ```
-sudo su
-source /home/yourUserName/catkin_ws/devel/setup.bash
 roslaunch unitree_legged_real real.launch rname:=a1 ctrl_level:=highlevel firmwork:=3_2
-```
-
-```
-rosrun unitree_legged_real lcm_server HIGHLEVEL
-```
-
-```
-cop unitree_joy_cmd && sds
-cop unitree_legged_msgs && sds
-cop unitree_legged_real && sds
 
 rosrun joy joy_node _autorepeat_rate:=100
-rosrun unitree_joy_cmd joy_to_cmd_vel_node 
-
+rosrun unitree_joy_cmd joy_to_cmd_vel_node
+rosrun unitree_legged_real ros_control_a1
 ```

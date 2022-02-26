@@ -9,6 +9,9 @@ Use of this source code is governed by the MPL-2.0 license, see LICENSE.
 #include <pthread.h>
 #include <ros/ros.h>
 #include <string>
+
+#include <chrono>
+#include <thread>
 #include <std_msgs/Bool.h>
 #include <std_msgs/UInt8.h>
 #include <sensor_msgs/Imu.h>
@@ -46,14 +49,16 @@ void mode_cb(const std_msgs::UInt8 &msg)
 {
   mode = msg.data;
 
-  std::cout << mode << std::endl;
+  std::cout << int(mode) << std::endl;
+  std::cout << "flag" << std::endl;
 }
 
 void a1_mode_cb(const std_msgs::UInt8 &msg)
 {
   a1_mode = msg.data;
 
-  std::cout << a1_mode << std::endl;
+  std::cout << int(a1_mode) << std::endl;
+  std::cout << "a1_mode_cb flag" << std::endl;
 }
 
 template <typename TLCM>
@@ -78,6 +83,7 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
 
   int last_start_cmd = 0;
   int last_set_cmd = 0;
+  long motiontime = 0;
 
   // ros 구문 자루와 인자 설정
   ros::NodeHandle n;
@@ -175,51 +181,72 @@ int mainHelper(int argc, char *argv[], TLCM &roslcm)
     switch (a1_mode)
     {
     case 1:
+      motiontime = 0;
       SendHighROS.mode = 1;
       SendHighROS.velocity[0] = 0.0;
       SendHighROS.velocity[1] = 0.0;
       SendHighROS.yawSpeed = angular_z;
-      SendHighROS.euler[0] = linear_y * 1.0;
-      SendHighROS.euler[1] = linear_x * 1.0;
-      SendHighROS.euler[2] = angular_z * 1.0;
+      SendHighROS.euler[0] = linear_y * 0.7;
+      SendHighROS.euler[1] = linear_x * 0.5;
+      SendHighROS.euler[2] = angular_z * 0.3;
       break;
     case 2:
+      motiontime = 0;
       SendHighROS.mode = 2;
       SendHighROS.gaitType = 1;
       SendHighROS.velocity[0] = linear_x;
       SendHighROS.velocity[1] = linear_y;
       // Check required
-      SendHighROS.velocity[2] = angular_z;
-      // SendHighROS.yawSpeed = angular_z;
+      // SendHighROS.velocity[2] = angular_z;
+      SendHighROS.yawSpeed = angular_z;
 
       SendHighROS.bodyHeight = 0.1;
       SendHighROS.footRaiseHeight = 0.1;
       break;
     case 3:
+      motiontime = 0;
       SendHighROS.mode = 2;
       SendHighROS.gaitType = 2;
       SendHighROS.velocity[0] = linear_x;
       SendHighROS.velocity[1] = linear_y;
       // Check required
-      SendHighROS.velocity[2] = angular_z;
-      // SendHighROS.yawSpeed = angular_z;
+      // SendHighROS.velocity[2] = angular_z;
+      SendHighROS.yawSpeed = angular_z;
 
       SendHighROS.bodyHeight = 0.1;
       SendHighROS.footRaiseHeight = 0.1;
       break;
     case 4:
-      SendHighROS.mode = 2;
-      SendHighROS.gaitType = 3;
-      SendHighROS.velocity[0] = linear_x;
-      SendHighROS.velocity[1] = linear_y;
-      // Check required
-      SendHighROS.velocity[2] = angular_z;
-      // SendHighROS.yawSpeed = angular_z;
+      if (motiontime < 5001){
+        motiontime = motiontime+2;
+        if (motiontime % 10 == 0)
+          std::cout << motiontime << std::endl;
+      }
 
-      SendHighROS.bodyHeight = 0.1;
-      SendHighROS.footRaiseHeight = 0.1;
+      if (motiontime > 0 && motiontime < 2000){
+        SendHighROS.mode = 5;
+      }
+      if (motiontime > 2000 && motiontime < 4000){
+        SendHighROS.mode = 6;
+      }
+      if (motiontime > 4000 && motiontime < 5000){
+        SendHighROS.mode = 0;
+      }
+      if (motiontime > 5000) {
+        SendHighROS.mode = 2;
+        SendHighROS.gaitType = 3;
+        SendHighROS.velocity[0] = linear_x;
+        SendHighROS.velocity[1] = linear_y;
+        // Check required
+        // SendHighROS.velocity[2] = angular_z;
+        SendHighROS.yawSpeed = angular_z;
+
+        SendHighROS.bodyHeight = 0.1;
+        SendHighROS.footRaiseHeight = 0.1;
+      }
       break;
     default:
+      motiontime = 0;
       break;
     }
 
@@ -259,7 +286,7 @@ int main(int argc, char *argv[])
 
 //   mainHelper();
 
-  UNITREE_LEGGED_SDK::InitEnvironment();
+  // UNITREE_LEGGED_SDK::InitEnvironment();
   UNITREE_LEGGED_SDK::LCM roslcm(UNITREE_LEGGED_SDK::HIGHLEVEL);
   mainHelper<UNITREE_LEGGED_SDK::HighCmd, UNITREE_LEGGED_SDK::HighState, UNITREE_LEGGED_SDK::LCM>(argc, argv, roslcm);
 }
