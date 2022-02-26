@@ -81,6 +81,10 @@ rosrun unitree_legged_real lcm_server HIGHLEVEL
 ```
 
 ```
+cop unitree_joy_cmd && sds
+cop unitree_legged_msgs && sds
+cop unitree_legged_real && sds
+
 rosrun joy joy_node _autorepeat_rate:=100
 rosrun unitree_joy_cmd joy_to_cmd_vel_node 
 
