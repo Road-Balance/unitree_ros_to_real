@@ -1,10 +1,8 @@
-Packages Version: v3.2.1
+Packages Version: v3.4.2
 
 # Introduction
-This package can send control command to real robot from ROS. You can do low-level control(namely control all joints on robot) and high-level control(namely control the walking direction and speed of robot).
 
-This version is suitable for unitree_legged_sdk v3.2 and v3.1, namely A1 and Aliengo robot. Currently, all the A1 and Aliengo use v3.2. If your Aliengo is really old, then it may use v3.1.
-As for Go1, please use the v3.4 release version of this package and unitree_legged_sdk v3.4.
+ROS Pkgs for Unitree Go1 Quadruped robot.
 
 ## Packages:
 
@@ -13,8 +11,8 @@ Basic message function: `unitree_legged_msgs`
 The interface between ROS and real robot: `unitree_legged_real`
 
 # Dependencies
-* [unitree_legged_sdk](https://github.com/unitreerobotics): If your robot is suitable for `unitree_legged_sdk`, then you do not need `aliengo_sdk`.
-* [aliengo_sdk](https://github.com/unitreerobotics): If your robot is suitable for `aliengo_sdk`, then you do not need `unitree_legged_sdk`.
+* [unitree_legged_sdk](https://github.com/unitreerobotics)
+
 
 # Configuration
 Make sure the following exist in your `~/.bashrc` file or export them in terminal. `melodic`, `gazebo-8`, `~/catkin_ws`, `amd64` and the paths to `unitree_legged_sdk` should be replaced in your own case. 
