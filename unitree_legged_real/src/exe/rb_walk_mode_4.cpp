@@ -14,15 +14,19 @@ Use of this source code is governed by the MPL-2.0 license, see LICENSE.
 
 UNITREE_LEGGED_SDK::LCM roslcm(UNITREE_LEGGED_SDK::HIGHLEVEL);
 
-template <typename TLCM> void *update_loop(void *param) {
+template <typename TLCM>
+void *update_loop(void *param)
+{
   TLCM *data = (TLCM *)param;
-  while (ros::ok) {
+  while (ros::ok)
+  {
     data->Recv();
     usleep(2000);
   }
 }
 
-class A1LCMInterface {
+class A1LCMInterface
+{
 private:
   long motiontime = 0;
   std::string m_name;
@@ -40,7 +44,8 @@ private:
   ros::Subscriber m_sub;
 
 public:
-  A1LCMInterface(const std::string &name_in) : m_name(name_in) {
+  A1LCMInterface(const std::string &name_in) : m_name(name_in)
+  {
     ROS_INFO("Publisher and Subscriber initialized");
 
     m_pub = m_nh.advertise<unitree_legged_msgs::HighState>("/a1_high_state", 5);
@@ -50,22 +55,22 @@ public:
 
   ~A1LCMInterface() {}
 
-  void subCallback(const unitree_legged_msgs::HighCmd &data) {
-    std::cout << data.roll << std::endl;
-    std::cout << data.pitch << std::endl;
-    std::cout << data.yaw << std::endl;
+  void subCallback(const unitree_legged_msgs::HighCmd &data)
+  {
+    // std::cout << data.roll << std::endl;
+    // std::cout << data.pitch << std::endl;
+    // std::cout << data.yaw << std::endl;
 
     SendHighROS.mode = data.mode;
-    SendHighROS.roll = data.roll;
-    SendHighROS.pitch = data.pitch;
-    SendHighROS.yaw = data.yaw;
+    SendHighROS.velocity[0] = data.velocity[0];
+    SendHighROS.velocity[1] = data.velocity[1];
 
-    // if (data.mode == 2)
-    //   SendHighROS.mode = 2;
+    if (data.mode == 2)
+      SendHighROS.mode = 2;
 
-    SendHighROS.forwardSpeed = data.forwardSpeed;
-    SendHighROS.sideSpeed = data.sideSpeed;
-    SendHighROS.rotateSpeed = data.rotateSpeed;
+    SendHighROS.euler[0] = data.euler[0];
+    SendHighROS.euler[1] = data.euler[1];
+    SendHighROS.euler[2] = data.euler[2];
     SendHighROS.bodyHeight = data.bodyHeight;
 
     // SendHighROS.forwardSpeed = data.forwardSpeed;
@@ -74,8 +79,8 @@ public:
     // SendHighROS.bodyHeight = data.bodyHeight;
 
     printf("==========================\n");
-    printf("%f\n", SendHighROS.forwardSpeed);
-    printf("%f\n", SendHighROS.rotateSpeed);
+    // printf("%f\n", SendHighROS.forwardSpeed);
+    // printf("%f\n", SendHighROS.rotateSpeed);
 
     SendHighLCM = ToLcm(SendHighROS, SendHighLCM);
     roslcm.Send(SendHighLCM);
@@ -90,7 +95,8 @@ public:
   }
 };
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
   ros::init(argc, argv, "walk_ros_mode");
   std::string firmwork;
   ros::param::get("/firmwork", firmwork);
@@ -117,7 +123,8 @@ int main(int argc, char *argv[]) {
   pthread_t tid;
   pthread_create(&tid, NULL, update_loop<UNITREE_LEGGED_SDK::LCM>, &roslcm);
 
-  while (ros::ok()) {
+  while (ros::ok())
+  {
     ros::spinOnce();
   }
 
