@@ -79,3 +79,9 @@ roslaunch unitree_legged_real real.launch rname:=a1 ctrl_level:=highlevel firmwo
 ```
 rosrun unitree_legged_real lcm_server HIGHLEVEL
 ```
+
+```
+rosrun joy joy_node _autorepeat_rate:=100
+rosrun unitree_joy_cmd joy_to_cmd_vel_node 
+
+```

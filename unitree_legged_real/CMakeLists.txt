@@ -58,7 +58,7 @@ add_dependencies(walk_lcm ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_
 # target_link_libraries(ros_control_go1 ${EXTRA_LIBS} ${catkin_LIBRARIES})
 # add_dependencies(ros_control_go1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-add_executable(ros_control_a1 src/exe/ros_control_a1_test.cpp)
+add_executable(ros_control_a1 src/exe/ros_control_a1.cpp)
 target_link_libraries(ros_control_a1 ${EXTRA_LIBS} ${catkin_LIBRARIES})
 add_dependencies(ros_control_a1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
